@@ -2,7 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
-import morganMiddleware from 'middleware/httpLpgger.ts'
+import morganMiddleware from 'middleware/httpLpgger.js'
+import { errorHandler } from 'middleware/errorHandler.js'
 
 export const app = express()
 
@@ -11,6 +12,10 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 app.use(cors())
 app.use(morganMiddleware)
 
+// Routes
+
+// Global error handler (should be after routes)
+app.use(errorHandler)
 
 const options = {
     definition: {
@@ -19,9 +24,9 @@ const options = {
             title: 'Nodeify Server API',
             version: '1.0.0',
             description: 'A simple API for sending and receiving messages in real-time per WebSocket.'
-        },
+        }
     },
-    apis: ['../controllers/message.controller.ts', '../models/messages.model.ts'], // files containing annotations as above
+    apis: ['../controllers/message.controller.ts', '../models/messages.model.ts'] // files containing annotations as above
 }
 
 const swaggerSpec = swaggerJsdoc(options)
