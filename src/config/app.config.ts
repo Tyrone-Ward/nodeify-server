@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import morganMiddleware from 'middleware/httpLpgger.js'
 import { errorHandler } from 'middleware/errorHandler.js'
+import appRouter from 'routes/app.routes.js'
 
 export const app = express()
 
@@ -13,8 +14,9 @@ app.use(cors())
 app.use(morganMiddleware)
 
 // Routes
+app.use('/', appRouter)
 
-// Global error handler (should be after routes)
+// Global error handler
 app.use(errorHandler)
 
 const options = {
@@ -26,7 +28,7 @@ const options = {
             description: 'A simple API for sending and receiving messages in real-time per WebSocket.'
         }
     },
-    apis: ['../controllers/message.controller.ts', '../models/messages.model.ts'] // files containing annotations as above
+    apis: ['./src/controllers/app.controller.ts', './models/messages.model.ts'] // files containing annotations as above
 }
 
 const swaggerSpec = swaggerJsdoc(options)

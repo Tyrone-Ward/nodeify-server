@@ -7,7 +7,7 @@ app.get('/', (req, res) => {
     res.send('hello')
 })
 
-// Gracefully shutdown
+// Gracefully shutdown ?
 let SHUTDOWN = false
 
 process.on('SIGINT', async () => {

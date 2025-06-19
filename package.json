@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "tsx watch ./src/index.ts",
-        "build": "npx tsc && node dist/index.js"
+        "build": "npx tsc && node dist/index.js",
+        "format": "time npx prettier . --write"
     },
     "keywords": [],
     "author": "",
