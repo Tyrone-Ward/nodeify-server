@@ -3,6 +3,18 @@ import { app } from '@config/app.config.js'
 import logger from '@utils/logger.js'
 import { sequelize } from '@config/database.config.js'
 
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     tags:
+ *     - Health
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+
 app.get('/', (req, res) => {
     res.send('hello')
 })

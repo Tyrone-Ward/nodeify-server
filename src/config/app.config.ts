@@ -26,9 +26,15 @@ const options = {
             title: 'Nodeify Server API',
             version: '1.0.0',
             description: 'A simple API for sending and receiving messages in real-time per WebSocket.'
-        }
+        },
+        servers: [
+            {
+                url: 'http://localhost:3000',
+                description: 'Development server'
+            }
+        ],
     },
-    apis: ['./src/controllers/app.controller.ts', './models/messages.model.ts'] // files containing annotations as above
+    apis: ['./src/controllers/app.controller.ts', './src/models/messages.model.ts', './src/index.ts'], // files containing annotations as above
 }
 
 const swaggerSpec = swaggerJsdoc(options)
