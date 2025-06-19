@@ -1,19 +1,7 @@
-import { expressServer, SERVER_PORT } from '@config/server.config.js'
-import { app } from '@config/app.config.js'
+import { expressServer, SERVER_PORT } from '@config/server.config'
+import { app } from '@config/app.config'
 import logger from '@utils/logger.js'
-import { sequelize } from '@config/database.config.js'
-
-/**
- * @openapi
- * /:
- *   get:
- *     tags:
- *     - Health
- *     description: Welcome to swagger-jsdoc!
- *     responses:
- *       200:
- *         description: Returns a mysterious string.
- */
+import { sequelize } from '@config/database.config'
 
 app.get('/', (req, res) => {
     res.send('hello')
