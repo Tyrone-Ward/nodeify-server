@@ -1,6 +1,11 @@
 import os from 'node:os'
 import { statSync } from 'node:fs'
 import { Request, Response } from 'express'
+import { Database } from 'sqlite3'
+import { sequelize } from '@config/database.config'
+import logger from '@utils/logger'
+
+const db = new Database('./database/database.db')
 
 /**
  * @openapi
@@ -30,15 +35,18 @@ export const index = (req: Request, res: Response) => {
  *         description: App is up and running
  */
 
-export const health = (req: Request, res: Response) => {
-    // const dbSize = statSync('./database/messages.db').size
-    // const dbHealth = db.pragma('integrity_check')[0].integrity_check
-
-    res.json({
-        databaseHealth: null,
-        databaseSize: 0,
-        health: 'green',
-        process_uptime: `${Math.floor(process.uptime())} seconds`,
-        system_uptime: `${Math.floor(os.uptime())} seconds`
-    })
+export const health = async (req: Request, res: Response) => {
+    try {
+        const dbSize = statSync('./database/database.db').size
+        await sequelize.authenticate()
+        res.json({
+            databaseHealth: 'ok',
+            databaseSize: dbSize,
+            health: 'green',
+            processUptime: `${Math.floor(process.uptime())} seconds`,
+            systemUptime: `${Math.floor(os.uptime())} seconds`
+        })
+    } catch (error) {
+        logger.error(error)
+    }
 }
