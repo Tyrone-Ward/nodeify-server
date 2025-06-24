@@ -9,12 +9,13 @@ const EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN
 
 export type TokenPayload = {
     id: string
+    role: string
 }
 
 export interface DecodedToken extends JwtPayload, TokenPayload {}
 
 // Generate a JWT token for an application or client.
-export const generateToken =  (payload: TokenPayload): string => {
+export const generateToken = (payload: TokenPayload): string => {
     return jwt.sign(payload, SECRET, { expiresIn: EXPIRES_IN })
 }
 
@@ -35,6 +36,6 @@ export const extractToken = (req: any): string | null => {
         return null
     }
 
-    const refreshToken = authHeader.split(' ')[1]
-    return refreshToken || null
+    const accessToken = authHeader.split(' ')[1]
+    return accessToken || null
 }

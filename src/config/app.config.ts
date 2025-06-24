@@ -7,6 +7,7 @@ import { errorHandler } from 'middleware/errorHandler.js'
 import appRouter from 'routes/app.routes.js'
 import { notFound } from 'middleware/notFound'
 import { version } from '../../package.json'
+import { authRouter } from 'routes/auth.routes'
 
 export const app = express()
 
@@ -17,6 +18,7 @@ app.use(morganMiddleware)
 
 // Routes
 app.use('/', appRouter)
+app.use('/auth', authRouter)
 
 const options = {
     definition: {

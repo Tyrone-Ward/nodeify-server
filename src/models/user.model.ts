@@ -21,7 +21,7 @@ import { sequelize } from '@config/database.config'
  *         password:
  *           type: string
  *           description: The user's password.
- *           example: passworx123
+ *           example: password123
  */
 
 export const User = sequelize.define('User', {
