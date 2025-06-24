@@ -1,11 +1,8 @@
 import os from 'node:os'
 import { statSync } from 'node:fs'
 import { Request, Response } from 'express'
-import { Database } from 'sqlite3'
 import { sequelize } from '@config/database.config'
 import logger from '@utils/logger'
-
-const db = new Database('./database/database.db')
 
 /**
  * @openapi
