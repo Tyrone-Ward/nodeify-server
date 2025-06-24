@@ -1,5 +1,6 @@
+import os from 'node:os'
+import { statSync } from 'node:fs'
 import { Request, Response } from 'express'
-
 
 /**
  * @openapi
@@ -30,5 +31,14 @@ export const index = (req: Request, res: Response) => {
  */
 
 export const health = (req: Request, res: Response) => {
-    res.json({ message: 'all good' })
+    // const dbSize = statSync('./database/messages.db').size
+    // const dbHealth = db.pragma('integrity_check')[0].integrity_check
+
+    res.json({
+        databaseHealth: null,
+        databaseSize: 0,
+        health: 'green',
+        process_uptime: `${Math.floor(process.uptime())} seconds`,
+        system_uptime: `${Math.floor(os.uptime())} seconds`
+    })
 }

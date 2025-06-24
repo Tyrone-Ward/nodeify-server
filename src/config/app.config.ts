@@ -5,6 +5,8 @@ import swaggerJsdoc from 'swagger-jsdoc'
 import morganMiddleware from 'middleware/httpLpgger.js'
 import { errorHandler } from 'middleware/errorHandler.js'
 import appRouter from 'routes/app.routes.js'
+import { notFound } from 'middleware/notFound'
+import { version } from '../../package.json'
 
 export const app = express()
 
@@ -16,15 +18,12 @@ app.use(morganMiddleware)
 // Routes
 app.use('/', appRouter)
 
-// Global error handler
-app.use(errorHandler)
-
 const options = {
     definition: {
         openapi: '3.0.0',
         info: {
             title: 'Nodeify Server API',
-            version: '1.0.0',
+            version: version,
             description: 'A simple API for sending and receiving messages in real-time per WebSocket.'
         },
         servers: [
@@ -32,10 +31,14 @@ const options = {
                 url: 'http://localhost:3000',
                 description: 'Development server'
             }
-        ],
+        ]
     },
-    apis: ['./src/controllers/app.controller.ts', './src/models/messages.model.ts', './src/index.ts'], // files containing annotations as above
+    apis: ['./src/controllers/*.ts', './src/models/*.ts', './src/middleware/errorHandler.ts'] // files containing annotations as above
 }
 
 const swaggerSpec = swaggerJsdoc(options)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+// Global error handlers
+app.use(notFound)
+app.use(errorHandler)
