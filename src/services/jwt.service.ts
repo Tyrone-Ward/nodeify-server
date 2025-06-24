@@ -1,28 +1,29 @@
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken'
 import logger from '@utils/logger'
-import dotenv from 'dotenv'
+import 'dotenv/config'
+import { StringValue } from 'ms'
 
-dotenv.config()
-
-const SECRET = process.env.JWT_SECRET as string
-const EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN
+const JWT_SECRET = process.env.JWT_SECRET as Secret
+const EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN as StringValue
 
 export type TokenPayload = {
+    username: string
+    email: string
     id: string
-    role: string
+    role: 'admin' | 'user'
 }
 
 export interface DecodedToken extends JwtPayload, TokenPayload {}
 
 // Generate a JWT token for an application or client.
 export const generateToken = (payload: TokenPayload): string => {
-    return jwt.sign(payload, SECRET, { expiresIn: EXPIRES_IN })
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: EXPIRES_IN })
 }
 
 // Verify a JWT token and return the payload if valid, otherwise null.
 export const verifyToken = (token: string): DecodedToken | null => {
     try {
-        return jwt.verify(token, SECRET) as DecodedToken
+        return jwt.verify(token, JWT_SECRET) as DecodedToken
     } catch (err) {
         return null
     }
