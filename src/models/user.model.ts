@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from 'sequelize'
+import { Sequelize, Optional, DataTypes, Model } from 'sequelize'
 import logger from '@utils/logger'
 import { sequelize } from '@config/database.config'
 
@@ -24,7 +24,18 @@ import { sequelize } from '@config/database.config'
  *           example: password123
  */
 
-export const User = sequelize.define('User', {
+interface UserAttributes {
+    id?: string
+    email: string
+    username: string
+    hashedPass: string
+    role?: string
+    isActive?: boolean
+}
+
+interface UserInstance extends Model<UserAttributes>, UserAttributes {}
+
+export const User = sequelize.define<UserInstance>('User', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,

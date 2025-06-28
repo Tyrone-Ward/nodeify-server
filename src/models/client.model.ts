@@ -1,9 +1,18 @@
-import { Sequelize, DataTypes } from 'sequelize'
+import { Sequelize, DataTypes, Model } from 'sequelize'
 import logger from '@utils/logger'
 import { sequelize } from '@config/database.config'
 import { nanoid } from 'nanoid'
 
-export const Client = sequelize.define('Client', {
+interface ClientAttributes {
+    id?: string
+    lastUsed: Date
+    name: string
+    token: string
+}
+
+interface ClientInstance extends Model<ClientAttributes>, ClientAttributes {}
+
+export const Client = sequelize.define<ClientInstance>('Client', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,

@@ -3,7 +3,7 @@ import url from 'url'
 import { Client } from 'models/client.model'
 import { cli } from 'winston/lib/winston/config'
 
-type ClientRegistry = Map<number, Set<WebSocket>>
+type ClientRegistry = Map<string, Set<WebSocket>>
 export const connectedClients: ClientRegistry = new Map()
 
 export const setupWebSocket = (wss: WebSocketServer): void => {
