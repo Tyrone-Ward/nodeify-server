@@ -22,7 +22,7 @@ const startServer = async () => {
             logger.info(`Listening on http://localhost:${SERVER_PORT}`)
         })
     } catch (error) {
-        logger.error('error')
+        logger.error('Failed to start server:', error)
     }
 }
 

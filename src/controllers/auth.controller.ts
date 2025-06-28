@@ -31,8 +31,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user: null | any | string = await User.findOne({ where: { email } })
 
-        if (!user) {
-            res.status(401).json({ error: 'Invalid username or password' })
+        if (!user || !password) {
+            res.status(401).json({ error: 'All fields are required' })
             return
         }
 

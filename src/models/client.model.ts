@@ -13,10 +13,12 @@ export const Client = sequelize.define('Client', {
         type: DataTypes.DATE
     },
     name: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        unique: true
     },
     token: {
         type: DataTypes.UUID,
-        defaultValue: nanoid(10)
+        defaultValue: nanoid(10),
+        allowNull: false
     }
 })
