@@ -33,7 +33,7 @@ export const verifyToken = (token: string): DecodedToken | null => {
 export const extractToken = (req: any): string | null => {
     const authHeader = req.headers.authorization
     if (!authHeader?.startsWith('Bearer ')) {
-        logger.error('No refresh token provided.')
+        logger.error('No access token provided.')
         return null
     }
 

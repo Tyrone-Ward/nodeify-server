@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { extractToken, verifyToken, DecodedToken } from '@services/jwt.service'
+import logger from '@utils/logger'
 
 export const requireAdmin = (req: Request, res: Response, next: NextFunction): void => {
     const token = extractToken(req)
@@ -9,7 +10,8 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction): v
     }
 
     const decoded = verifyToken(token)
-    if (!decoded || decoded.type !== 'user' || decoded.role !== 'admin') {
+    logger.info(decoded)
+    if (!decoded || decoded.role !== 'admin') {
         res.status(403).json({ error: 'Admin access required' })
         return
     }
