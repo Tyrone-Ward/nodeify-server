@@ -3,6 +3,8 @@ import { statSync } from 'node:fs'
 import { Request, Response } from 'express'
 import { sequelize } from '@config/database.config'
 import logger from '@utils/logger'
+import { connectedClients } from '@services/websocket.service'
+import { Client } from 'models/client.model'
 
 /**
  * @openapi
@@ -47,3 +49,10 @@ export const health = async (req: Request, res: Response) => {
         logger.error(error)
     }
 }
+
+export const connectedClientsCount = (req: Request, res: Response) => {
+    // logger.info(connectedClients)
+    res.send(connectedClients.size)
+}
+
+export const createClient = async () => {}

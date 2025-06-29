@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws'
 import url from 'url'
 import { Client } from 'models/client.model'
-import { cli } from 'winston/lib/winston/config'
+import logger from '@utils/logger'
 
 type ClientRegistry = Map<string, Set<WebSocket>>
 export const connectedClients: ClientRegistry = new Map()
@@ -10,16 +10,20 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
     wss.on('connection', async (ws: WebSocket, req) => {
         const parsedUrl = url.parse(req.url || '', true)
         const token = parsedUrl.query.token as string
+        logger.info('token:', token)
 
         if (!token) {
             ws.close(4001, 'Token required')
+            logger.warn('No token provided')
             return
         }
 
         // Lookup client by token
         const client = await Client.findOne({ where: { token } })
         if (!client) {
+            ws.send(JSON.stringify({ error: 'incorrect credentials' }))
             ws.close(4003, 'Invalid token')
+            logger.warn('Invalid token')
             return
         }
 
@@ -45,6 +49,7 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
                 }
             }
         })
+        ws.on('error', console.error)
     })
 }
 
