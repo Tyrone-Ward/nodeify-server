@@ -5,9 +5,9 @@ import { nanoid } from 'nanoid'
 
 interface ClientAttributes {
     id?: string
-    lastUsed: Date
+    lastUsed?: Date
     name: string
-    token: string
+    token?: string
 }
 
 interface ClientInstance extends Model<ClientAttributes>, ClientAttributes {}

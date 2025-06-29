@@ -50,9 +50,41 @@ export const health = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * @openapi
+ * /client/status:
+ *  get:
+ *     tags:
+ *     - client
+ *     description: Responds with the ammount of clients currently listening for messages.
+ *     responses:
+ *       200:
+ *         description: Client count
+ */
+
 export const connectedClientsCount = (req: Request, res: Response) => {
     // logger.info(connectedClients)
     res.send(connectedClients.size)
 }
 
-export const createClient = async () => {}
+/**
+ * @openapi
+ * /client:
+ *  post:
+ *     tags:
+ *     - client
+ *     description: Create a client.
+ *     responses:
+ *       200:
+ *         description: Successfully created client.
+ */
+
+export const createClient = async (req: Request, res: Response) => {
+    const { name } = req.body
+    try {
+        const newClient = await Client.create({ name })
+        res.json({ id: newClient.id, name: newClient.name, token: newClient.token })
+    } catch (error) {
+        logger.error(error)
+    }
+}
