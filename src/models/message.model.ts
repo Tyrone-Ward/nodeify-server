@@ -6,7 +6,7 @@ import { v7 } from 'uuid'
 export const Message = sequelize.define('Message', {
     _id: {
         type: DataTypes.UUID,
-        defaultValue: v7(),
+        defaultValue: () => v7(),
         primaryKey: true
     },
     message: {
