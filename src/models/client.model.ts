@@ -2,14 +2,18 @@ import { Sequelize, DataTypes, Model } from 'sequelize'
 import logger from '@utils/logger'
 import { sequelize } from '@config/database.config'
 import { nanoid } from 'nanoid'
+import { User } from './user.model'
 
 interface ClientAttributes {
     token?: string
-    lastUsed?: Date
     name: string
+    lastUsed?: Date
+    userId: string
 }
 
 interface ClientInstance extends Model<ClientAttributes>, ClientAttributes {}
+
+// establish a foreign key relationship
 
 export const Client = sequelize.define<ClientInstance>('Client', {
     token: {
@@ -26,5 +30,13 @@ export const Client = sequelize.define<ClientInstance>('Client', {
     lastUsed: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false
     }
 })
+
+// Associations
+Client.belongsTo(User, { foreignKey: 'userId' })
+User.hasMany(Client, { foreignKey: 'userId' })

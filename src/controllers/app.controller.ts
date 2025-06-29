@@ -81,6 +81,8 @@ export const connectedClientsCount = (req: Request, res: Response) => {
 
 export const createClient = async (req: Request, res: Response) => {
     const { name } = req.body
+    const userId = (req as any).userId
+    console.log(userId)
 
     try {
         const clientExists = await Client.findOne({ where: { name } })
@@ -88,9 +90,13 @@ export const createClient = async (req: Request, res: Response) => {
             res.status(409).json({ error: 'Client already exists.' })
             return
         }
-        const newClient = await Client.create({ name })
+        const newClient = await Client.create({ name, userId })
         res.json({ name: newClient.name, token: newClient.token })
     } catch (error) {
-        logger.error(error)
+        let errorMessage = 'Failed to do something exceptional'
+        if (error instanceof Error) {
+            errorMessage = error.message
+            logger.error(error.message)
+        }
     }
 }
