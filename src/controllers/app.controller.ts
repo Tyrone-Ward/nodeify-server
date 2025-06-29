@@ -81,9 +81,15 @@ export const connectedClientsCount = (req: Request, res: Response) => {
 
 export const createClient = async (req: Request, res: Response) => {
     const { name } = req.body
+
     try {
+        const clientExists = await Client.findOne({ where: { name } })
+        if (clientExists) {
+            res.status(409).json({ error: 'Client already exists.' })
+            return
+        }
         const newClient = await Client.create({ name })
-        res.json({ id: newClient.id, name: newClient.name, token: newClient.token })
+        res.json({ name: newClient.name, token: newClient.token })
     } catch (error) {
         logger.error(error)
     }

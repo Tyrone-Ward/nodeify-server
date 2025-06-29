@@ -27,7 +27,7 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
             return
         }
 
-        const clientToken = client.token
+        const clientToken = client.token as string
 
         // Add connection to the client’s set
         if (!connectedClients.has(clientToken)) {
