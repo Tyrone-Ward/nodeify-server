@@ -6,18 +6,17 @@ import { generateToken } from '@services/jwt.service'
 const SALT_ROUNDS = 10
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-    const { email, username, password } = req.body
+    const { email, password } = req.body
 
     try {
         const emailExists = await User.findOne({ where: { email } })
-        const usernameExists = await User.findOne({ where: { username } })
-        if (emailExists || usernameExists) {
-            res.status(409).json({ error: 'Email address or Username already exists.' })
+        if (emailExists) {
+            res.status(409).json({ error: 'Email address already exists.' })
             return
         }
 
         const hashedPass = await bcrypt.hash(password, SALT_ROUNDS)
-        await User.create({ email, username, hashedPass })
+        await User.create({ email, hashedPass })
 
         res.status(201).json({ message: 'user created' })
     } catch (err) {
@@ -39,11 +38,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         const match = await bcrypt.compare(password, user.hashedPass)
         console.log(match)
         if (!match) {
-            res.status(401).json({ error: 'Invalid username or password' })
+            res.status(401).json({ error: 'Invalid email address or password' })
             return
         }
 
-        const accessToken = generateToken({ username: user.username, role: user.role, id: user.id, email: user.email })
+        const accessToken = generateToken({ role: user.role, id: user.id, email: user.email })
 
         res.status(200).json({ accessToken })
     } catch (err: any) {

@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET as Secret
 const EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN as StringValue
 
 export type TokenPayload = {
-    username: string
     email: string
     id: string
     role: 'admin' | 'user'

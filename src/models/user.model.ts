@@ -14,10 +14,6 @@ import { sequelize } from '@config/database.config'
  *           format: email
  *           example: john@email.com
  *           description: The user's email address.
- *         username:
- *           type: string
- *           description: The user's username.
- *           example: LinusTorvalds15
  *         password:
  *           type: string
  *           description: The user's password.
@@ -27,7 +23,6 @@ import { sequelize } from '@config/database.config'
 interface UserAttributes {
     id?: string
     email: string
-    username: string
     hashedPass: string
     role?: string
     isActive?: boolean
@@ -44,10 +39,6 @@ export const User = sequelize.define<UserInstance>('User', {
     email: {
         type: DataTypes.TEXT,
         allowNull: false,
-        unique: true
-    },
-    username: {
-        type: DataTypes.TEXT,
         unique: true
     },
     hashedPass: {
