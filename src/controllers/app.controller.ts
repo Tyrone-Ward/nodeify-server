@@ -57,7 +57,7 @@ export const health = async (req: Request, res: Response): Promise<void> => {
  *  get:
  *     tags:
  *     - client
- *     description: Responds with the ammount of clients currently listening for messages.
+ *     description: Responds with the number of clients currently listening for messages.
  *     responses:
  *       200:
  *         description: Client count
@@ -87,7 +87,6 @@ export const createClient = async (req: Request, res: Response, next: NextFuncti
     try {
         const clientExists = await Client.findOne({ where: { name } })
         if (clientExists) {
-            // res.status(409).json({ error: 'Client already exists.' })
             throw new AppError('Conflict', 'Client already exists', 409)
         }
         const newClient = await Client.create({ name, userId })

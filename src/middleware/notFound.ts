@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
-import { AppError } from './errorHandler'
+import { AppError } from '@utils/AppError'
 
 export const notFound = (req: Request, res: Response, next: NextFunction) => {
-    const error: AppError = new Error(`Not Found - ${req.originalUrl}`)
-    error.status = 404
-    next(error)
+    const err = new AppError('Not found', 'Resource not found', 404)
+    next(err)
 }
