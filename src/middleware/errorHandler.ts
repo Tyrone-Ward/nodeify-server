@@ -1,5 +1,6 @@
 import logger from '@utils/logger'
 import { Request, Response, NextFunction } from 'express'
+import { AppError } from '@utils/AppError'
 
 /**
  * @openapi
@@ -17,14 +18,24 @@ import { Request, Response, NextFunction } from 'express'
  *        - message
  */
 
-export interface AppError extends Error {
-    status?: number
-}
+export const errorHandler = (error: AppError, req: Request, res: Response, next: NextFunction): void => {
+    if (error.name === 'ValidationError') {
+        res.status(400).send({
+            type: 'ValidationError'
+        })
+        return
+    }
 
-export const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunction) => {
-    logger.error(err.message)
-    res.status(err.status || 500).json({
-        code: err.status || 500,
-        Message: err.message || 'Internal Server Error'
-    })
+    if (error instanceof AppError) {
+        logger.error(error.message)
+        res.status(error.statusCode).json({
+            code: error.statusCode,
+            status: error.errorCode,
+            description: error.message
+        })
+        return
+    }
+
+    res.status(500).send('Something went wrong')
+    return
 }

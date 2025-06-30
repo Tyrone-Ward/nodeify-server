@@ -1,10 +1,11 @@
 import os from 'node:os'
 import { statSync } from 'node:fs'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { sequelize } from '@config/database.config'
 import logger from '@utils/logger'
 import { connectedClients } from '@services/websocket.service'
 import { Client } from 'models/client.model'
+import { AppError } from '@utils/AppError'
 
 /**
  * @openapi
@@ -79,19 +80,19 @@ export const connectedClientsCount = (req: Request, res: Response) => {
  *         description: Successfully created client.
  */
 
-export const createClient = async (req: Request, res: Response): Promise<void> => {
+export const createClient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name } = req.body
     const userId = (req as any).userId
 
     try {
         const clientExists = await Client.findOne({ where: { name } })
         if (clientExists) {
-            res.status(409).json({ error: 'Client already exists.' })
-            return
+            // res.status(409).json({ error: 'Client already exists.' })
+            throw new AppError('Conflict', 'Client already exists', 409)
         }
         const newClient = await Client.create({ name, userId })
         res.json({ name: newClient.name, token: newClient.token })
     } catch (error) {
-        logger.error(error as Error)
+        next(error)
     }
 }
