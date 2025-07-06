@@ -1,5 +1,4 @@
-import { Sequelize, DataTypes, Model } from 'sequelize'
-import logger from '@utils/logger'
+import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '@config/database.config'
 import { nanoid } from 'nanoid'
 import { User } from './user.model'

@@ -64,7 +64,7 @@ export const health = async (req: Request, res: Response): Promise<void> => {
  */
 
 export const connectedClientsCount = (req: Request, res: Response) => {
-    // logger.info(connectedClients)
+    logger.info(connectedClients)
     res.send(connectedClients.size)
 }
 

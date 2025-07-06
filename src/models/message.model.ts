@@ -1,10 +1,20 @@
-import { Sequelize, DataTypes } from 'sequelize'
-import logger from '@utils/logger'
+import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '@config/database.config'
 import { v7 } from 'uuid'
 
+interface MessageAttributes {
+    id?: string
+    message: string
+    recipient: string
+    sender: string
+    date?: Date
+    isDelivered?: Boolean
+}
+
+interface MessageInstance extends Model<MessageAttributes>, MessageAttributes {}
+
 export const Message = sequelize.define('Message', {
-    _id: {
+    id: {
         type: DataTypes.UUID,
         defaultValue: () => v7(),
         primaryKey: true
@@ -22,6 +32,7 @@ export const Message = sequelize.define('Message', {
         type: DataTypes.DATE
     },
     isDelivered: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 })

@@ -53,4 +53,13 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
     })
 }
 
-export const sendToClient = (clientToken: string, message: any, senderToken: string): void => {}
+export const sendToClient = (clientToken: string, message: any, senderToken: string): void => {
+    const sockets = connectedClients.get(clientToken)
+    if (!sockets) return
+
+    for (const ws of sockets) {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify(message))
+        }
+    }
+}
