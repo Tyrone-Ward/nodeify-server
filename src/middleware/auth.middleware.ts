@@ -16,7 +16,7 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
         throw new AppError('Unauthorized', 'Invalid or non-user token.', 401)
         return
     }
-    logger.info(decoded)
+    // logger.info(decoded)
     try {
         const user = await User.findByPk(decoded.id)
         if (!decoded || decoded.role !== 'admin') {
@@ -37,16 +37,31 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
     next()
 }
 
-export const authCheck = (req: Request, res: Response, next: NextFunction): void => {
-    const token = extractToken(req) as string
+export const authCheck = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const token = extractToken(req)
+    if (!token) {
+        throw new AppError('Unauthorized', 'Token required.', 401)
+        return
+    }
 
+    const decoded = verifyToken(token)
+    if (!decoded) {
+        throw new AppError('Unauthorized', 'Invalid or non-user token.', 401)
+        return
+    }
+    // logger.info(decoded)
     try {
-        const decoded = verifyToken(token)
+        const user = await User.findByPk(decoded.id)
+        if (!user) {
+            throw new AppError('Not Found', 'User not found.', 404)
+            return
+        }
+        // Attach user info to request if needed downstream
+        if (user?.id) {
+            ;(req as any).userId = user.id
+        }
     } catch (error) {
-        throw new AppError('Unauthorized', 'User not admin.', 403)
-        // res.status(401)
-        // res.json({ message: 'User not admin' })
-
+        next(error)
         return
     }
 

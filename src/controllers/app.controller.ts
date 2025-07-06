@@ -3,7 +3,7 @@ import { statSync } from 'node:fs'
 import { NextFunction, Request, Response } from 'express'
 import { sequelize } from '@config/database.config'
 import logger from '@utils/logger'
-import { connectedClients } from '@services/websocket.service'
+import { connectedClients, sendToClient } from '@services/websocket.service'
 import { Client } from 'models/client.model'
 import { AppError } from '@utils/AppError'
 
@@ -91,6 +91,33 @@ export const createClient = async (req: Request, res: Response, next: NextFuncti
         }
         const newClient = await Client.create({ name, userId })
         res.json({ name: newClient.name, token: newClient.token })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const sendMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    // Move to auth middleware
+    const { content, recipient } = req.body
+    const authHeader = req.headers.authorization
+    if (!authHeader?.startsWith('Bearer ')) {
+        throw new AppError('Unauthorized', 'Token required.', 401)
+        return
+    }
+
+    const token = authHeader.split(' ')[1]
+    console.log(token)
+
+    try {
+        const sender = await Client.findOne({ where: { token } })
+        if (!sender) {
+            throw new AppError('Not Found', 'User not found', 404)
+            return
+        }
+        logger.info(`message: user: ${recipient}, content: ${content}, senderToken: ${sender.token}`)
+        sendToClient(recipient, content, sender.token)
+        // res.json({ message: 'mesage sent successfully.' })
+        res.json({ recipient, content, token })
     } catch (error) {
         next(error)
     }

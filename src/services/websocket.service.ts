@@ -1,9 +1,11 @@
 import { WebSocketServer, WebSocket } from 'ws'
 import url from 'url'
 import { Client } from 'models/client.model'
+import { Message } from 'models/message.model'
 import logger from '@utils/logger'
 
 type ClientRegistry = Map<string, Set<WebSocket>>
+// type ClientInstance = string
 export const connectedClients: ClientRegistry = new Map()
 
 export const setupWebSocket = (wss: WebSocketServer): void => {
@@ -53,7 +55,7 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
     })
 }
 
-export const sendToClient = (clientToken: string, message: any, senderToken: string): void => {
+export const sendToClient = async (clientToken: string, message: any, senderToken: any): Promise<void> => {
     const sockets = connectedClients.get(clientToken)
     if (!sockets) return
 

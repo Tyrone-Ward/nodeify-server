@@ -4,7 +4,7 @@ import { v7 } from 'uuid'
 
 interface MessageAttributes {
     id?: string
-    message: string
+    content: string
     recipient: string
     sender: string
     date?: Date
@@ -19,7 +19,7 @@ export const Message = sequelize.define('Message', {
         defaultValue: () => v7(),
         primaryKey: true
     },
-    message: {
+    content: {
         type: DataTypes.STRING
     },
     recipient: {
