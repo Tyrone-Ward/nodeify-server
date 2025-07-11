@@ -59,12 +59,16 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
 
 export const sendToClient = async (clientToken: string, content: any, senderToken: any): Promise<void> => {
     const sockets = connectedClients.get(clientToken)
-    if (!sockets) return
+    if (!sockets) {
+        logger.info('no clients connected')
+        await Message.create({ content, recipient: clientToken, sender: senderToken, date: Date.now(), isDelivered: false })
+        return
+    }
 
     for (const ws of sockets) {
         if (ws.readyState === WebSocket.OPEN) {
-            console.log('message:', { senderToken, content, clientToken })
             ws.send(JSON.stringify({ senderToken, content }))
+            logger.info('client is connected. Sending message...')
         }
     }
 }

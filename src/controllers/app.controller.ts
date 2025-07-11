@@ -40,6 +40,7 @@ export const health = async (req: Request, res: Response): Promise<void> => {
         const dbSize = statSync('./database/database.db').size
         await sequelize.authenticate()
         res.json({
+            pid: process.pid,
             databaseHealth: 'ok',
             databaseSize: dbSize,
             health: 'green',
@@ -113,7 +114,7 @@ export const sendMessage = async (req: Request, res: Response, next: NextFunctio
             throw new AppError('Not Found', 'User not found', 404)
             return
         }
-        logger.info(`message: user: ${recipient}, content: ${content}, senderToken: ${sender.token}`)
+        // logger.info(`message: user: ${recipient}, content: ${content}, senderToken: ${sender.token}`)
         sendToClient(recipient, content, sender.token)
         // res.json({ message: 'mesage sent successfully.' })
         res.json({ recipient, content, token })
