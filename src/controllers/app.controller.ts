@@ -106,7 +106,6 @@ export const sendMessage = async (req: Request, res: Response, next: NextFunctio
     }
 
     const token = authHeader.split(' ')[1]
-    console.log(token)
 
     try {
         const sender = await Client.findOne({ where: { token } })

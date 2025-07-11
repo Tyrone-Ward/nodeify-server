@@ -12,7 +12,7 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
     wss.on('connection', async (ws: WebSocket, req) => {
         const parsedUrl = url.parse(req.url || '', true)
         const token = parsedUrl.query.token as string
-        logger.info('token:', token)
+        // logger.info(`token: ${token}`)
 
         if (!token) {
             ws.close(4001, 'Token required')
@@ -37,7 +37,7 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
         }
         connectedClients.get(clientToken)?.add(ws)
 
-        console.log(`Client ${client.name} connected (connections: ${connectedClients.get(clientToken)?.size})`)
+        logger.info(`Client ${client.name} connected (connections: ${connectedClients.get(clientToken)?.size})`)
 
         ws.on('close', () => {
             const clientSet = connectedClients.get(clientToken)
@@ -45,23 +45,26 @@ export const setupWebSocket = (wss: WebSocketServer): void => {
                 clientSet.delete(ws)
                 if (clientSet.size === 0) {
                     connectedClients.delete(clientToken)
-                    console.log(`Client ${clientToken} fully disconnected`)
+                    logger.info(`Client ${clientToken} fully disconnected`)
                 } else {
-                    console.log(`Client ${clientToken} connection closed (remaining: ${clientSet.size})`)
+                    logger.info(`Client ${clientToken} connection closed (remaining: ${clientSet.size})`)
                 }
             }
         })
-        ws.on('error', console.error)
+        ws.on('error', (error) => {
+            logger.error(error)
+        })
     })
 }
 
-export const sendToClient = async (clientToken: string, message: any, senderToken: any): Promise<void> => {
+export const sendToClient = async (clientToken: string, content: any, senderToken: any): Promise<void> => {
     const sockets = connectedClients.get(clientToken)
     if (!sockets) return
 
     for (const ws of sockets) {
         if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(message))
+            console.log('message:', { senderToken, content, clientToken })
+            ws.send(JSON.stringify({ senderToken, content }))
         }
     }
 }
